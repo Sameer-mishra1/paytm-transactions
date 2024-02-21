@@ -1,18 +1,19 @@
-import { Router } from 'express';
+const express = require('express');
 const zod = require('zod');
-import { sign } from 'jsonwebtoken';
-import { User } from '../db';
-import JWT_SECRET from '../config';
+const jwt = require('jsonwebtoken')
+const { User, Account } = require("../db");
+const JWT_SECRET = require('../config')
+const { authMiddleware } = require('../middleware')
 
-const router = Router();
+const router = express.Router();
 
 // Signup
 
-const signupSchema = object({
-    username: string().email(),
-    password: string(),
-    firstName: string(),
-    lastName: string(),
+const signupSchema = zod.object({
+    username: zod.string().email(),
+    password: zod.string(),
+    firstName: zod.string(),
+    lastName: zod.string(),
 })
 
 router.post('/signup', async (req, res) => {
@@ -24,22 +25,37 @@ router.post('/signup', async (req, res) => {
         })
     }
 
-    const user = await User.findOne({
+    const existingUser = await User.findOne({
         username: body.username
     })
 
-    if (user._id) {
-        return res.json({
+    if (existingUser) {
+        return res.status(411).json({
             message: "Email already taken / Incorrect inputs"
         })
     }
 
-    const dbUser = await User.create(body);
-    const token = sign({
-        userId: dbUser._id
-    }, JWT_SECRET)
+    const user = await User.create({
+        username: req.body.username,
+        password: req.body.password,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+    })
+
+    const userId = user._id
+
+    // Creating new account after checking for existing user
+    await Account.create({
+        userId,
+        balance: 1 + Math.random() * 10000
+    })
+
+    const token = jwt.sign({
+        userId
+    }, JWT_SECRET);
+
     res.json({
-        message: "User created successfully!",
+        message: 'User created successfully!',
         token: token
     })
 
@@ -83,7 +99,7 @@ router.post('/signin', async (req, res) => {
 })
 
 // Other routes
-const updateBody = zod({
+const updateBody = zod.object({
     password: zod.string().optional(),
     firstName: zod.string().optional(),
     lastName: zod.string().optional(),
@@ -133,4 +149,4 @@ router.get('/bulk', authMiddleware, async (req, res) => {
 })
 
 
-export default router; 
+module.exports = router;
