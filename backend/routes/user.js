@@ -114,7 +114,7 @@ router.put('/', authMiddleware, async (req, res) => {
         })
     }
 
-    await User.findOne({
+    await User.updateOne({
         _id: req.userId
     }, req.body)
 

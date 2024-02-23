@@ -1,6 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const mainRouter = require('./routes/index')
+const dotenv = require('dotenv')
+dotenv.config();
+
+const username = process.env.MONGODB_USERNAME;
+const password = process.env.MONGODB_PASSWORD;
 
 const app = express();
 
