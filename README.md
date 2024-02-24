@@ -3,6 +3,8 @@
 
 ## A basic version of PayTM
 
+![alt text](./frontend/src/assets/Signup.png)
+
  - Users can sign up
  - Users can sign in
  - Users can see fellow users in the Dashboard
