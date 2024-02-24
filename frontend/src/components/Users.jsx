@@ -9,10 +9,15 @@ export function Users() {
     const [users, setUsers] = useState([]);
     const [filter, setFilter] = useState("");
 
+    // Add debouncing
     useEffect(() => {
         axios.get("http://localhost:3000/api/v1/user/bulk?filter=" + filter)
-        .then(response => {
-            setUsers(response.data.user)
+            .then(response => {
+                console.log(response.data);
+                setUsers(response.data.user)
+        })
+        .catch(e => {
+            console.error('Error here', e);
         })
     }, [filter])
 
@@ -26,7 +31,7 @@ export function Users() {
             }} type="text" placeholder="Search users..." className="w-full px-2 py-1 border border-slate-200"></input>
         </div>
         <div>
-            {users.map(user => <User user={user} />)}
+        {users.map(user => <User user={user} />)}
         </div>
     </>
 }
@@ -46,11 +51,11 @@ function User({user}) {
                     {user.firstName} {user.lastName}
                 </div>
             </div>
+            </div>
             <div className="flex flex-col justify-center h-full">
                 <Button onClick={(e) => {
                     navigate("/send?id=" + user._id + "&name=" + user.firstName)
                 }} label={"Send Money"}/>
             </div>
         </div>
-    </div>
 }
