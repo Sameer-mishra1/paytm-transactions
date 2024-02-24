@@ -24,8 +24,5 @@
  1. React - Frontend framework
  2. Tailwind - Styling framework
 ---
-Sign up -
-![Sign up](./frontend/src/assets/Signup.png)
 
-Send Money -
-![Send Money](./frontend/src/assets/sendMoney.png)
+ [![Gmail Badge](https://img.shields.io/badge/-Gmail-white?style=flat&logo=Gmail&logoColor=red)](mailto:sameermishra6666@gmail.com)
